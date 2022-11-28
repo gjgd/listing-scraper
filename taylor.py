@@ -70,7 +70,7 @@ def get_taylor_prices_callback(observer):
         labels = {
             "event_id": event_id,
             "event_date": event_dates[event_id],
-            "price": "max_price"
+            "price": "avg_price"
         }
         print(labels, price)
         yield Observation(price, labels)
@@ -82,7 +82,7 @@ def get_taylor_prices_callback(observer):
         labels = {
             "event_id": event_id,
             "event_date": event_dates[event_id],
-            "price": "avg_price"
+            "price": "max_price"
         }
         print(labels, price)
         yield Observation(price, labels)
