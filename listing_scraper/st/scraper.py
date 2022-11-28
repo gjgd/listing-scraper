@@ -45,7 +45,7 @@ def get_events(league = 'NBA', start = "2022-09-09", end = "9999-12-31"):
             for i in items:
                 i['eventid_from_url'] = int(i['url'].strip('/').split('/')[-1])
             pbar.update(1)
-            
+
         # append last page
         item_dicts.append(items)
 
@@ -88,7 +88,7 @@ def get_listings(eventid):
         for e in eventid:
             res.append(get_listings(e))
         return res
-    
+
     url = f"https://www.stubhub.com/event/{eventid}"
     url = s.request("POST", url,allow_redirects=True).url
     response = s.request("POST", url)
@@ -127,5 +127,5 @@ def parse_listing(l):
     columns = {}
     for c in columns:
         listing[columns[c]] = l[c]
-    
+
     return listing
