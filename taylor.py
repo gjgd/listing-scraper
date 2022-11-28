@@ -1,23 +1,23 @@
-from dotenv import load_dotenv
-load_dotenv()
-import os
-from listing_scraper import st
-from opentelemetry import metrics
+import numpy as np
+import pandas as pd
+from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
+from opentelemetry.sdk.metrics import MeterProvider
+from opentelemetry.metrics import Observation
 from opentelemetry.exporter.prometheus_remote_write import (
     PrometheusRemoteWriteMetricsExporter,
 )
-from opentelemetry.metrics import Observation
-from opentelemetry.sdk.metrics import MeterProvider
-from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
+from opentelemetry import metrics
+from listing_scraper import st
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
-import pandas as pd
-import numpy as np
 
 exporter = PrometheusRemoteWriteMetricsExporter(
     endpoint=os.getenv("PROM_REMOTE_WRITE_URL"),
     basic_auth={
-        "username":os.getenv("PROM_REMOTE_WRITE_USER"),
-        "password":os.getenv("PROM_REMOTE_WRITE_PASSWORD"),
+        "username": os.getenv("PROM_REMOTE_WRITE_USER"),
+        "password": os.getenv("PROM_REMOTE_WRITE_PASSWORD"),
     },
 )
 reader = PeriodicExportingMetricReader(exporter, 1000)
@@ -35,10 +35,11 @@ sunday_event_id = 150593515
 save_loc = 'taylor.json'
 
 event_dates = {
-  friday_event_id: "Fri Mar 31, Arlington, Texas",
-  saturday_event_id: "Sat Apr 01, Arlington, Texas",
-  sunday_event_id: "Sun Apr 02, Arlington, Texas",
+    friday_event_id: "Fri Mar 31, Arlington, Texas",
+    saturday_event_id: "Sat Apr 01, Arlington, Texas",
+    sunday_event_id: "Sun Apr 02, Arlington, Texas",
 }
+
 
 def get_taylor_prices_callback(observer):
 
@@ -50,24 +51,39 @@ def get_taylor_prices_callback(observer):
 
     # df = pd.read_json(save_loc)
 
-    min_price = pd.pivot_table(df, values='RawPrice', index=['EventId'], aggfunc=np.min)
+    min_price = pd.pivot_table(df, values='RawPrice', index=[
+                               'EventId'], aggfunc=np.min)
     min_price_dict = min_price['RawPrice'].to_dict()
     for event_id, price in min_price_dict.items():
-        labels = {"event_id": event_id, "event_date": event_dates[event_id], "price": "min_price"}
+        labels = {
+            "event_id": event_id,
+            "event_date": event_dates[event_id],
+            "price": "min_price"
+        }
         print(labels, price)
         yield Observation(price, labels)
 
-    avg_price = pd.pivot_table(df, values='RawPrice', index=['EventId'], aggfunc=np.mean)
+    avg_price = pd.pivot_table(df, values='RawPrice', index=[
+                               'EventId'], aggfunc=np.mean)
     avg_price_dict = avg_price['RawPrice'].to_dict()
     for event_id, price in avg_price_dict.items():
-        labels = {"event_id": event_id, "event_date": event_dates[event_id], "price": "max_price"}
+        labels = {
+            "event_id": event_id,
+            "event_date": event_dates[event_id],
+            "price": "max_price"
+        }
         print(labels, price)
         yield Observation(price, labels)
 
-    max_price = pd.pivot_table(df, values='RawPrice', index=['EventId'], aggfunc=np.max)
+    max_price = pd.pivot_table(df, values='RawPrice', index=[
+                               'EventId'], aggfunc=np.max)
     max_price_dict = max_price['RawPrice'].to_dict()
     for event_id, price in max_price_dict.items():
-        labels = {"event_id": event_id, "event_date": event_dates[event_id], "price": "avg_price"}
+        labels = {
+            "event_id": event_id,
+            "event_date": event_dates[event_id],
+            "price": "avg_price"
+        }
         print(labels, price)
         yield Observation(price, labels)
 
