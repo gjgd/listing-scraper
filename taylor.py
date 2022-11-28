@@ -1,8 +1,6 @@
 from dotenv import load_dotenv
 load_dotenv()
 import os
-import time
-
 from listing_scraper import st
 from opentelemetry import metrics
 from opentelemetry.exporter.prometheus_remote_write import (
@@ -22,7 +20,7 @@ exporter = PrometheusRemoteWriteMetricsExporter(
         "password":os.getenv("PROM_REMOTE_WRITE_PASSWORD"),
     },
 )
-reader = PeriodicExportingMetricReader(exporter, 60 * 1000)
+reader = PeriodicExportingMetricReader(exporter, 1000)
 provider = MeterProvider(metric_readers=[reader])
 metrics.set_meter_provider(provider)
 meter = metrics.get_meter(__name__)
@@ -36,6 +34,12 @@ sunday_event_id = 150593515
 
 save_loc = 'taylor.json'
 
+event_dates = {
+  friday_event_id: "Fri Mar 31, Arlington, Texas",
+  saturday_event_id: "Sat Apr 01, Arlington, Texas",
+  sunday_event_id: "Sun Apr 02, Arlington, Texas",
+}
+
 def get_taylor_prices_callback(observer):
 
     events = [friday_event_id, saturday_event_id, sunday_event_id]
@@ -46,27 +50,24 @@ def get_taylor_prices_callback(observer):
 
     # df = pd.read_json(save_loc)
 
-    print(1)
     min_price = pd.pivot_table(df, values='RawPrice', index=['EventId'], aggfunc=np.min)
     min_price_dict = min_price['RawPrice'].to_dict()
     for event_id, price in min_price_dict.items():
-        labels = {"event_id": event_id, "price": "min_price"}
+        labels = {"event_id": event_id, "event_date": event_dates[event_id], "price": "min_price"}
         print(labels, price)
         yield Observation(price, labels)
 
-    print(2)
     avg_price = pd.pivot_table(df, values='RawPrice', index=['EventId'], aggfunc=np.mean)
     avg_price_dict = avg_price['RawPrice'].to_dict()
     for event_id, price in avg_price_dict.items():
-        labels = {"event_id": event_id, "price": "avg_price"}
+        labels = {"event_id": event_id, "event_date": event_dates[event_id], "price": "max_price"}
         print(labels, price)
         yield Observation(price, labels)
 
-    print(3)
     max_price = pd.pivot_table(df, values='RawPrice', index=['EventId'], aggfunc=np.max)
     max_price_dict = max_price['RawPrice'].to_dict()
     for event_id, price in max_price_dict.items():
-        labels = {"event_id": event_id, "price": "max_price"}
+        labels = {"event_id": event_id, "event_date": event_dates[event_id], "price": "avg_price"}
         print(labels, price)
         yield Observation(price, labels)
 
@@ -77,7 +78,3 @@ meter.create_observable_counter(
     description="",
     unit="",
 )
-
-# while True:
-#   print("hi")
-#   time.sleep(10)
