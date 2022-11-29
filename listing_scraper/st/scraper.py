@@ -91,8 +91,8 @@ def get_listings(eventid):
 
     url = f"https://www.stubhub.com/event/{eventid}"
     url = s.request("POST", url,allow_redirects=True).url
-    response = s.request("POST", url)
-
+    data ={"PageSize": 100}
+    response = s.request("POST", url, data=data)
 
     if response.status_code == 404:
         print('404, Probably, no listings for event {}'.format(eventid))
@@ -109,11 +109,11 @@ def get_listings(eventid):
             item_dicts.append(items)
 
             querystring['CurrentPage'] = int(querystring['CurrentPage']) + 1
-            respjson = s.request("POST", url, params=querystring).json()
+            respjson = s.request("POST", url, params=querystring, data=data).json()
             items = respjson['Items']
             pbar.set_description(f'Code: {response.status_code} Event Id: {eventid}')
             pbar.update(1)
-            
+
         # append last page
         item_dicts.append(items)
 
