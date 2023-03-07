@@ -77,7 +77,7 @@ def prepare_session():
     s.mount('https://', HTTPAdapter(max_retries=retries))
     return s
 
-def get_listings(eventid):
+def get_listings(eventid, quantity=None):
     '''
     Get all event listings.
     '''
@@ -86,10 +86,12 @@ def get_listings(eventid):
     if type(eventid) is list:
         res = []
         for e in eventid:
-            res.append(get_listings(e))
+            res.append(get_listings(e, quantity))
         return res
 
     url = f"https://www.stubhub.com/event/{eventid}"
+    if quantity is not None:
+        url += f"?quantity={quantity}"
     url = s.request("POST", url,allow_redirects=True).url
     data ={"PageSize": 100}
     response = s.request("POST", url, data=data)

@@ -18,8 +18,10 @@ metadata = {
     }
 }
 
+quantity = None
+
 meter.create_observable_counter(
-    callbacks=[get_concert_prices_callback_by_events(events, metadata=metadata)],
+    callbacks=[get_concert_prices_callback_by_events(events, metadata=metadata, quantity=quantity)],
     name="suga_prices",
     unit="",
 )
