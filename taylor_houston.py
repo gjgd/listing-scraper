@@ -29,8 +29,10 @@ metadata = {
     }
 }
 
+quantity = 2
+
 meter.create_observable_counter(
-    callbacks=[get_concert_prices_callback_by_events(events, metadata=metadata)],
+    callbacks=[get_concert_prices_callback_by_events(events, metadata=metadata, quantity=quantity)],
     name="taylor_prices",
     unit="",
 )

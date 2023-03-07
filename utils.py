@@ -8,10 +8,11 @@ def filter_out_parking(df):
   df = df[(df['Section'] !=  "PARKING")]
   return df
 
-def get_concert_prices_callback_by_events(events, metadata):
+def get_concert_prices_callback_by_events(events, metadata, quantity=None):
     def get_concert_prices_callback(observer):
-        res = st.get_listings(events)
+        res = st.get_listings(events, quantity=quantity)
         df = pd.concat([pd.DataFrame(r) for r in res])
+        # save_loc = metadata.get("event_artist") + ".json"
         # df.to_json(save_loc, orient='records')
         # df = pd.read_json(save_loc,)
 
@@ -21,10 +22,13 @@ def get_concert_prices_callback_by_events(events, metadata):
         min_price = pd.pivot_table(df, values='RawPrice', index=['EventId'], aggfunc=np.min)
         min_price_dict = min_price['RawPrice'].to_dict()
         for event_id, price in min_price_dict.items():
+            event_url = metadata["event_urls"][event_id]
+            if quantity is not None:
+                event_url += f"?quantity={quantity}"
             labels = {
                 "event_id": event_id,
                 "event_date": metadata["event_dates"][event_id],
-                "event_url": metadata["event_urls"][event_id],
+                "event_url": event_url,
                 "event_image": metadata["event_image"],
                 "event_artist": metadata["event_artist"],
                 "price": "min_price"
