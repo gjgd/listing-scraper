@@ -1,4 +1,4 @@
-from listing_scraper import st
+from scraper import get_listings
 import pandas as pd
 import numpy as np
 from opentelemetry.metrics import Observation
@@ -10,7 +10,7 @@ def filter_out_parking(df):
 
 def get_concert_prices_callback_by_events(events, metadata, quantity=None):
     def get_concert_prices_callback(observer):
-        res = st.get_listings(events, quantity=quantity)
+        res = get_listings(events, quantity=quantity)
         df = pd.concat([pd.DataFrame(r) for r in res])
         # save_loc = metadata.get("event_artist") + ".json"
         # df.to_json(save_loc, orient='records')
