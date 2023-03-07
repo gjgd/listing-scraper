@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from opentelemetry.metrics import Observation
 from listing_scraper import st
+from utils import filter_out_parking
 
 # https://www.stubhub.com/taylor-swift-arlington-tickets-3-31-2023/event/151219647/
 friday_event_id = 151219647
@@ -43,9 +44,13 @@ def get_taylor_prices_callback_by_events(events):
 
         res = st.get_listings(events)
         df = pd.concat([pd.DataFrame(r) for r in res])
+        # save_loc = "taylor.json"
         # df.to_json(save_loc, orient='records')
 
         # df = pd.read_json(save_loc)
+
+        # Filter out Parking tickets
+        df = filter_out_parking(df)
 
         min_price = pd.pivot_table(df, values='RawPrice', index=[
                                 'EventId'], aggfunc=np.min)
