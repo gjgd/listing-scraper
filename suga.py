@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 from opentelemetry.metrics import Observation
 from listing_scraper import st
+from utils import filter_out_parking
 
 suga = 151473277
 
@@ -22,8 +23,9 @@ def get_suga_prices_callback_by_events(events):
         # df.to_json(save_loc, orient='records')
         # df = pd.read_json(save_loc,)
 
-        # Filter out parking
-        df = df[(df['Section'] !=  "PARKING")]
+        # Filter out Parking tickets
+        df = filter_out_parking(df)
+
         min_price = pd.pivot_table(df, values='RawPrice', index=[
                                 'EventId'], aggfunc=np.min)
         min_price_dict = min_price['RawPrice'].to_dict()
