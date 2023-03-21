@@ -31,8 +31,11 @@ metadata = {
 
 quantity = 2
 
+sections_blocklist = [444, 445, 446, 447, 448, 449, 450, 451, 341, 342, 343, 240, 241, 242, 243, 142, 143, 107, 106, 105, 205, 204, 203, 305, 304, 303, 410, 409, 408, 407, 406, 405, 404]
+sections_blocklist = [str(section) for section in sections_blocklist]
+
 meter.create_observable_counter(
-    callbacks=[get_concert_prices_callback_by_events(events, metadata=metadata, quantity=quantity)],
+    callbacks=[get_concert_prices_callback_by_events(events, metadata=metadata, quantity=quantity, sections_blocklist=sections_blocklist)],
     name="taylor_prices",
     unit="",
 )

@@ -8,7 +8,11 @@ def filter_out_parking(df):
   df = df[(df['Section'] !=  "PARKING")]
   return df
 
-def get_concert_prices_callback_by_events(events, metadata, quantity=None):
+def filter_out_sections(df, sections):
+  df = df[~df['Section'].isin(sections)]
+  return df
+
+def get_concert_prices_callback_by_events(events, metadata, quantity=None, sections_blocklist=[]):
     def get_concert_prices_callback(observer):
         res = get_listings(events, quantity=quantity)
         df = pd.concat([pd.DataFrame(r) for r in res])
@@ -16,8 +20,9 @@ def get_concert_prices_callback_by_events(events, metadata, quantity=None):
         # df.to_json(save_loc, orient='records')
         # df = pd.read_json(save_loc,)
 
-        # Filter out Parking tickets
+        # Filters
         df = filter_out_parking(df)
+        df = filter_out_sections(df, sections_blocklist)
 
         min_price = pd.pivot_table(df, values='RawPrice', index=['EventId'], aggfunc=np.min)
         min_price_dict = min_price['RawPrice'].to_dict()
