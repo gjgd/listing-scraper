@@ -1,55 +1,8 @@
 import requests
 from requests.adapters import HTTPAdapter, Retry
-
 from tqdm import tqdm
 import math
 import itertools
-import json
-import time
-import os
-
-
-def get_events(league = 'NBA', start = "2022-09-09", end = "9999-12-31"):
-    '''
-    Get all league events on stubhub.
-    '''
-
-    event_category = {'NBA':{'path':'nba-tickets','categoryid': "6453"},
-                      'NFL':{'path':'nfl-tickets','categoryid': "5084"}}
-
-
-    url = f"https://www.stubhub.com/{event_category[league]['path']}"
-
-    querystring = {"pageIndex":"0",
-                "gridFilterType":"0",
-                "sortBy":"0",
-                "method":"GetFilteredEvents",
-                "categoryId": event_category[league]['categoryid'],
-                "from": start,
-                "to": end}
-
-    response = requests.request("POST", url, params=querystring).json()
-
-    total_pages = math.ceil((response['totalCount'] - 2*response['pageSize'])/response['pageSize'])
-    items = response['items']
-    for i in items:
-        i['eventid_from_url'] = int(i['url'].strip('/').split('/')[-1])
-    item_dicts = []
-    with tqdm(total=total_pages) as pbar:
-        while response['remaining'] > 0:
-            item_dicts.append(items)
-
-            querystring['pageIndex'] = int(querystring['pageIndex']) + 1
-            response = requests.request("POST", url, params=querystring).json()
-            items = response['items']
-            for i in items:
-                i['eventid_from_url'] = int(i['url'].strip('/').split('/')[-1])
-            pbar.update(1)
-
-        # append last page
-        item_dicts.append(items)
-
-    return list(itertools.chain.from_iterable(item_dicts))
 
 class EnhancedSession(requests.Session):
     '''
@@ -95,7 +48,6 @@ def get_listings(eventid, quantity=None):
     url = s.request("POST", url,allow_redirects=True).url
     data ={"PageSize": 100}
     response = s.request("POST", url, data=data)
-
     if response.status_code == 404:
         print('404, Probably, no listings for event {}'.format(eventid))
         # print(url)
