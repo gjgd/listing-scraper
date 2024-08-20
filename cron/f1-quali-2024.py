@@ -1,4 +1,4 @@
-from metrics import meter
+from cron.metrics import meter
 from utils import get_concert_prices_callback_by_events
 
 f1_quali_2024 = 152042582

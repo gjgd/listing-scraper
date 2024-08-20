@@ -1,4 +1,4 @@
-from scraper import get_listings
+from cron.scraper import get_listings
 import pandas as pd
 import numpy as np
 from opentelemetry.metrics import Observation

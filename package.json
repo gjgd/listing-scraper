@@ -1,0 +1,9 @@
+{
+  "name": "taylor-scraper",
+  "devDependencies": {
+    "aws-cdk-lib": "^2.153.0",
+    "constructs": "^10.3.0",
+    "fs-extra": "^11.2.0",
+    "sst": "^2.43.6"
+  }
+}
