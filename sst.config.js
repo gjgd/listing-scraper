@@ -6,7 +6,7 @@ const Backend = ({ stack }) => {
 
   const cronFunction = new Function(stack, "function", {
     handler: "./cron/cron.main",
-    runtime: "python3.10",
+    runtime: "python3.11",
     timeout: 1 * 60,
     // bind: [SLACK_TOKEN],
   });
