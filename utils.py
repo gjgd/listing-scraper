@@ -12,9 +12,9 @@ def filter_out_sections(df, sections):
   df = df[~df['Section'].isin(sections)]
   return df
 
-def get_concert_prices_callback_by_events(events, metadata, quantity=None, sections_blocklist=[]):
+def get_concert_prices_callback_by_events(events, metadata, quantity=None, sections_blocklist=[], max_price=None):
     def get_concert_prices_callback(observer):
-        res = get_listings(events, quantity=quantity)
+        res = get_listings(events, quantity=quantity, max_price=max_price)
         df = pd.concat([pd.DataFrame(r) for r in res])
         # save_loc = metadata.get("event_artist") + ".json"
         # df.to_json(save_loc, orient='records')
