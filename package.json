@@ -1,5 +1,5 @@
 {
-  "name": "taylor-scraper",
+  "name": "stubhub-cron",
   "devDependencies": {
     "aws-cdk-lib": "^2.153.0",
     "constructs": "^10.3.0",
