@@ -1,4 +1,5 @@
 import json
+from slack import post_message_to_slack
 from scraper import get_listings
 import pandas as pd
 
@@ -37,6 +38,7 @@ def main(event, context):
             "BuyUrl": f"https://stubhub.com{min_price_row['BuyUrl']}",
         }
         print(json.dumps(display_json, indent=4))
+        post_message_to_slack(display_json, 'test')
 
 if __name__ == "__main__":
     main(None, None)
