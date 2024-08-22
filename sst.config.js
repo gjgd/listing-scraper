@@ -17,6 +17,7 @@ const Backend = ({ app, stack }) => {
     job: cronFunction,
     enabled: !isDev,
   });
+  // cron.attachPermissions(['ssm:GetParameter']);
 };
 
 export default {

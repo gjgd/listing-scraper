@@ -28,10 +28,11 @@ def main(event, context):
         min_price_index = df['RawPrice'].idxmin()
         min_price_row = df.loc[min_price_index]
         min_price_row_json = min_price_row.to_json()
-        print(json.dumps(json.loads(min_price_row_json), indent=4))
+        # print(json.dumps(json.loads(min_price_row_json)))
 
         display_json = {
             "Section": min_price_row['Section'],
+            "RawPrice": min_price_row['RawPrice'],
             "Price": min_price_row['Price'],
             "PriceWithFees": min_price_row['PriceWithFees'],
             "BuyUrl": f"https://stubhub.com{min_price_row['BuyUrl']}",

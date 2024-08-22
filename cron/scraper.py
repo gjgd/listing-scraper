@@ -50,7 +50,6 @@ def get_listings(eventid, quantity=None):
     response = s.request("POST", url, data=data)
     if response.status_code == 404:
         print('404, Probably, no listings for event {}'.format(eventid))
-        # print(url)
         return None
 
     respjson= response.json()
