@@ -1,19 +1,19 @@
-import { Cron, Function } from "sst/constructs";
+import { Config, Cron, Function } from "sst/constructs";
 
-const Backend = ({ stack }) => {
-  // const SLACK_TOKEN = new Config.Secret(stack, "SLACK_TOKEN");
+const Backend = ({ app, stack }) => {
+  const SLACK_TOKEN = new Config.Secret(stack, "SLACK_TOKEN");
   const isDev = stack.stage === 'dev';
 
   const cronFunction = new Function(stack, "function", {
     handler: "./cron/cron.main",
     runtime: "python3.11",
     timeout: 1 * 60,
-    // bind: [SLACK_TOKEN],
+    bind: [SLACK_TOKEN],
   });
+  cronFunction.attachPermissions(['ssm:GetParameter']);
 
   const cron = new Cron(stack, "cron", {
-    // schedule: "rate(1 minute)", // https://docs.sst.dev/cron-jobs
-    schedule: "rate(5 minutes)", // https://docs.sst.dev/cron-jobs
+    schedule: "rate(1 hour)", // https://docs.sst.dev/cron-jobs
     job: cronFunction,
     enabled: !isDev,
   });
