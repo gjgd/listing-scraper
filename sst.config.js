@@ -7,7 +7,7 @@ const Backend = ({ app, stack }) => {
   const cronFunction = new Function(stack, "function", {
     handler: "./cron/cron.main",
     runtime: "python3.11",
-    timeout: 1 * 60,
+    timeout: 2 * 60,
     bind: [SLACK_TOKEN],
   });
   cronFunction.attachPermissions(['ssm:GetParameter']);
