@@ -6,6 +6,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 slack_token = os.environ.get('SLACK_TOKEN')
+if not slack_token:
+    from aws_secrets import get_secret
+    slack_token = get_secret("SLACK_TOKEN")
 slack_client = WebClient(token=slack_token)
 slack_channel = 'test'
 results = {"key": "value"}  # Replace with your actual results

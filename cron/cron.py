@@ -1,5 +1,5 @@
 import json
-from slack import post_message_to_slack
+from slack_client import post_message_to_slack
 from scraper import get_listings
 import pandas as pd
 
