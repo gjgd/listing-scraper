@@ -37,11 +37,15 @@ def main(event, context):
             "PriceWithFees": min_price_row['PriceWithFees'],
             "BuyUrl": f"https://stubhub.com{min_price_row['BuyUrl']}",
         }
-        print(json.dumps(display_json, indent=4))
         pwf = display_json['PriceWithFees']
         pwf = pwf.replace("$", "")
         pwf = float(pwf)
-        if pwf < 300:
+        pwfat = display_json['Price']
+        pwfat = pwfat.replace("$", "")
+        pwfat = float(pwfat) * 1.42
+        display_json['PriceWithFeesAfterTax'] = f"${pwfat}"
+        print(json.dumps(display_json, indent=4))
+        if pwfat < 400:
             post_message_to_slack(display_json, 'stubhub-cron')
 
 if __name__ == "__main__":
