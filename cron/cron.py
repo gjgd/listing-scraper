@@ -17,10 +17,9 @@ def main(event, context):
     f1_quali_2024 = 152042582
     events = [f1_quali_2024]
     quantity = 2
-    max_price=300
 
     for event in events:
-        res = get_listings([event], quantity=quantity, max_price=max_price)
+        res = get_listings([event], quantity=quantity)
         df = pd.concat([pd.DataFrame(r) for r in res])
         # Filters
         # df = filter_out_parking(df)
