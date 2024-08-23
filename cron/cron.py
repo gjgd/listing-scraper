@@ -30,20 +30,23 @@ def main(event, context):
         min_price_row_json = min_price_row.to_json()
         # print(json.dumps(json.loads(min_price_row_json)))
 
-        display_json = {
-            "Section": min_price_row['Section'],
-            "RawPrice": min_price_row['RawPrice'],
-            "Price": min_price_row['Price'],
-            "PriceWithFees": min_price_row['PriceWithFees'],
-            "BuyUrl": f"https://stubhub.com{min_price_row['BuyUrl']}",
-        }
-        pwf = display_json['PriceWithFees']
+        # Print all possible "Section" values
+        # print(df['Section'].unique())
+
+        pwf = min_price_row['PriceWithFees']
         pwf = pwf.replace("$", "")
         pwf = float(pwf)
-        pwfat = display_json['Price']
-        pwfat = pwfat.replace("$", "")
+        p = min_price_row['Price']
+        pwfat = p.replace("$", "")
         pwfat = float(pwfat) * 1.42
-        display_json['PriceWithFeesAfterTax'] = f"${pwfat}"
+        display_json = {
+            "Section": min_price_row['Section'],
+            "PriceWithFeesAfterTax": f"${pwfat}",
+            "RawPrice": min_price_row['RawPrice'],
+            "Price": p,
+            "PriceWithFees": pwf,
+            "BuyUrl": f"https://stubhub.com{min_price_row['BuyUrl']}",
+        }
         print(json.dumps(display_json, indent=4))
         if pwfat < 400:
             post_message_to_slack(display_json, 'stubhub-cron')
