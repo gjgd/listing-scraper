@@ -12,11 +12,11 @@ if not slack_token:
 slack_client = WebClient(token=slack_token)
 slack_channel = 'test'
 
-def post_message_to_slack(results, slack_channel):
+def post_message_to_slack(message, slack_channel):
     try:
         response = slack_client.chat_postMessage(
             channel=slack_channel,
-            text=json.dumps(results, indent=2)
+            text=message
         )
         print(response)
     except SlackApiError as e:
